@@ -1,14 +1,6 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
+//! # r-agent
+//!
+//! `r-agent` is a Rust library for interacting with the OpenAI API.
+//! It is a simple implementation of the ReaCT Agent principle.
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+pub mod agent;
