@@ -4,3 +4,4 @@
 //! It is a simple implementation of the ReaCT Agent principle.
 
 pub mod agent;
+pub use agent::load_key;
