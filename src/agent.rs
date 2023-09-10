@@ -1,5 +1,7 @@
 use derive_builder::Builder;
+use reqwest::Client as HttpClient;
 use std::env;
+use serde::{Deserialize, Serialize};
 
 /// Loads the "OPENAI_API_KEY" environment variable.
 ///
@@ -24,11 +26,12 @@ use std::env;
 /// # Panics
 ///
 /// This function does not panic.
-pub fn load_key() -> Result<(), env::VarError> {
+pub fn load_key() -> Result<String, env::VarError> {
     let openai_key = env::var("OPENAI_API_KEY")?;
-    Ok(())
+    Ok(openai_key)
 }
 
+const API_URL_V1: &str = "https://api.openai.com/v1/";
 const DEFAULT_PROMPT_TEMPLATE: &str = "Answer the following questions as best you can.
 
                     Use the following format:
@@ -68,6 +71,40 @@ impl AgentPrompt {
 
     pub fn set_prompt(&mut self, prompt: String) {
         self.prompt = prompt;
+    }
+}
+
+
+// API Response
+#[derive(Debug, Deserialize, Serialize)]
+struct OpenAIResponse {
+    id: String,
+    object: String,
+    created: u64,
+    model: String,
+    choices: Vec<OpenAIChoice>,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+struct OpenAIChoice {
+    text: String,
+}
+
+pub struct Client {
+    client: HttpClient,
+    api_key: String,
+    base_url: String,
+}
+
+impl Client {
+    // Initialize a new client
+    pub fn new() -> Self {
+        let api_key: String = load_key().expect("Error: OpenAI Key was not found and loaded.");
+        Client {
+            client: HttpClient::new(),
+            api_key,
+            base_url: String::from(API_URL_V1),
+        }
     }
 }
 
