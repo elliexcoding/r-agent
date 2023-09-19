@@ -113,7 +113,13 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_load_key() {
-        load_key();
+    fn test_load_key_success() {
+        env::set_var("OPENAI_API_KEY", "test_value");
+        let result = load_key();
+        env::remove_var("OPENAI_API_KEY");
+        assert_eq!(result.unwrap(), "test_value")
     }
+
+    #[test]
+    fn test_
 }
